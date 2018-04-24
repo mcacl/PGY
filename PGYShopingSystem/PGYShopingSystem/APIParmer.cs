@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace PGYShopingSystem
 {
@@ -9,7 +6,7 @@ namespace PGYShopingSystem
     {
         public Enum Type { get; set; }
 
-        public Object Data { get; set; }
+        public object Data { get; set; }
     }
 
     public abstract class Action
@@ -26,7 +23,7 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " select " + Field + " from " + TableName;
@@ -51,12 +48,12 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
             {
                 SQL = " update " + TableName + " set ";
-                string fileval = "";
-                for (int i = 0; i < Fields.Length; i++)
+                var fileval = "";
+                for (var i = 0; i < Fields.Length; i++)
                 {
                     fileval += Fields[i] + "='" + Values[i] + "',";
                 }
@@ -78,13 +75,13 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
             {
                 SQL = " insert into " + TableName + "(";
-                string field = ",";
-                string value = ",";
-                for (int i = 0; i < Fields.Length; i++)
+                var field = ",";
+                var value = ",";
+                for (var i = 0; i < Fields.Length; i++)
                 {
                     field += Fields[i] + ",";
                     value += "'" + Values[i] + "',";
@@ -101,7 +98,7 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " delete " + TableName;

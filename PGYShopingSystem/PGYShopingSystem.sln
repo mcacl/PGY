@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PGYShopingSystem.Tests", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{722641AE-77EF-4C33-811C-46D3FD03BB3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBExecute", "DBExecute\DBExecute.csproj", "{3C5922B6-B726-4501-A93F-5581EFB47E76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{722641AE-77EF-4C33-811C-46D3FD03BB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{722641AE-77EF-4C33-811C-46D3FD03BB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{722641AE-77EF-4C33-811C-46D3FD03BB3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

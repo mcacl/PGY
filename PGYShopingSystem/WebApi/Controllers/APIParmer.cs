@@ -1,43 +1,41 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace PGYShopingSystem
 {
     public class APIParmer
     {
-        public int Type { get; set; }
-
-        public Object Data
-        {
-            get { return this; }
-            set
-            {
-                var type = (MyEnum)Type;
-                switch (type)
-                {
-                    case MyEnum.Select:
-                        value = JsonConvert.DeserializeObject(value.ToString()); break;
-                    case MyEnum.Insert:
-                        value = JsonConvert.DeserializeObject(value.ToString()); break;
-                    case MyEnum.Update:
-                        value = JsonConvert.DeserializeObject(value.ToString()); break;
-                    case MyEnum.Delete:
-                        value = JsonConvert.DeserializeObject(value.ToString()); break;
-                }
-            }
-        }
-
         public enum MyEnum
         {
             Select = 1,
             Insert = 2,
             Update = 3,
             Delete = 4
+        }
+
+        public int Type { get; set; }
+
+        public object Data
+        {
+            get { return this; }
+            set
+            {
+                var type = (MyEnum) Type;
+                switch (type)
+                {
+                    case MyEnum.Select:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Insert:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Update:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Delete:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                }
+            }
         }
     }
 
@@ -55,7 +53,7 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " select " + Field + " from " + TableName;
@@ -80,12 +78,12 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
             {
                 SQL = " update " + TableName + " set ";
-                string fileval = "";
-                for (int i = 0; i < Fields.Length; i++)
+                var fileval = "";
+                for (var i = 0; i < Fields.Length; i++)
                 {
                     fileval += Fields[i] + "='" + Values[i] + "',";
                 }
@@ -107,13 +105,13 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
             {
                 SQL = " insert into " + TableName + "(";
-                string field = ",";
-                string value = ",";
-                for (int i = 0; i < Fields.Length; i++)
+                var field = ",";
+                var value = ",";
+                for (var i = 0; i < Fields.Length; i++)
                 {
                     field += Fields[i] + ",";
                     value += "'" + Values[i] + "',";
@@ -130,7 +128,7 @@ namespace PGYShopingSystem
 
         public override string ToSQL()
         {
-            string SQL = "";
+            var SQL = "";
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " delete " + TableName;

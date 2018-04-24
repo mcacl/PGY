@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Helpers;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 
 namespace PGYShopingSystem
@@ -13,7 +8,7 @@ namespace PGYShopingSystem
         // GET api/<controller>
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new[] {"value1", "value2"};
         }
 
         // GET api/<controller>/5
@@ -25,36 +20,39 @@ namespace PGYShopingSystem
         // POST api/<controller>
         public string Post(APIParmer value)
         {
-            APIParmer.MyEnum myenum = (APIParmer.MyEnum)value.Type;
-            string SQL = "";
+            var myenum = (APIParmer.MyEnum) value.Type;
+            var SQL = "";
             switch (myenum)
             {
                 case APIParmer.MyEnum.Select:
                     var select = value.Data as ActSelect;
-                    string selectsql = select.ToSQL();
-                    SQL = selectsql; break;
+                    var selectsql = select.ToSQL();
+                    SQL = selectsql;
+                    break;
                 case APIParmer.MyEnum.Insert:
                     var insert = value.Data as ActInsert;
-                    string insertsql = insert.ToSQL();
-                    SQL = insertsql; break;
+                    var insertsql = insert.ToSQL();
+                    SQL = insertsql;
+                    break;
                 case APIParmer.MyEnum.Update:
                     var update = value.Data as ActUpdate;
-                    string updatesql = update.ToSQL();
-                    SQL = updatesql; break;
+                    var updatesql = update.ToSQL();
+                    SQL = updatesql;
+                    break;
                 case APIParmer.MyEnum.Delete:
                     var delete = value.Data as ActSelect;
-                    string deletesql = delete.ToSQL();
-                    SQL = deletesql; break;
+                    var deletesql = delete.ToSQL();
+                    SQL = deletesql;
+                    break;
             }
             if (!string.IsNullOrEmpty(SQL))
             {
-
             }
             return "";
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
         }
 

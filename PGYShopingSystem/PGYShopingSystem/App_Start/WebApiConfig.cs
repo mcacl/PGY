@@ -1,6 +1,4 @@
 ﻿using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace PGYShopingSystem
 {
@@ -17,10 +15,10 @@ namespace PGYShopingSystem
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-            name: "DefaultApi",
-            routeTemplate: "api/{controller}/{id}",
-            defaults: new { id = RouteParameter.Optional }
-        );
+                "DefaultApi",
+                "api/{controller}/{id}",
+                new {id = RouteParameter.Optional}
+            );
         }
     }
 }
