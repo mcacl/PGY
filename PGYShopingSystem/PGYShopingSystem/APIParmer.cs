@@ -1,24 +1,54 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 
 namespace PGYShopingSystem
 {
     public class APIParmer
     {
-        public Enum Type { get; set; }
+        public enum MyEnum
+        {
+            Select = 1,
+            Insert = 2,
+            Update = 3,
+            Delete = 4
+        }
 
-        public object Data { get; set; }
+        public int Type { get; set; }
+
+        public object Data
+        {
+            get { return this; }
+            set
+            {
+                var type = (MyEnum) Type;
+                switch (type)
+                {
+                    case MyEnum.Select:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Insert:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Update:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                    case MyEnum.Delete:
+                        value = JsonConvert.DeserializeObject(value.ToString());
+                        break;
+                }
+            }
+        }
     }
 
     public abstract class Action
     {
-        public string TableName { get; set; }
+        public static string TableName { get; set; }
         public abstract string ToSQL();
     }
 
     public class ActSelect : Action
     {
         public string Field { get; set; }
-        public string WhereTerm { get; set; }
+        public string WhereT { get; set; }
         public string Orderby { get; set; }
 
         public override string ToSQL()
@@ -27,9 +57,9 @@ namespace PGYShopingSystem
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " select " + Field + " from " + TableName;
-                if (!string.IsNullOrEmpty(WhereTerm))
+                if (!string.IsNullOrEmpty(WhereT))
                 {
-                    SQL = SQL + " where " + WhereTerm;
+                    SQL = SQL + " where " + WhereT;
                 }
                 if (!string.IsNullOrEmpty(Orderby))
                 {
@@ -44,7 +74,7 @@ namespace PGYShopingSystem
     {
         public string[] Fields { get; set; }
         public string[] Values { get; set; }
-        public string WhereTerm { get; set; }
+        public string WhereT { get; set; }
 
         public override string ToSQL()
         {
@@ -58,9 +88,9 @@ namespace PGYShopingSystem
                     fileval += Fields[i] + "='" + Values[i] + "',";
                 }
                 SQL = SQL + fileval.TrimEnd(',');
-                if (!string.IsNullOrEmpty(WhereTerm))
+                if (!string.IsNullOrEmpty(WhereT))
                 {
-                    SQL += SQL + " where " + WhereTerm;
+                    SQL += SQL + " where " + WhereT;
                 }
             }
             return SQL;
@@ -71,7 +101,7 @@ namespace PGYShopingSystem
     {
         public string[] Fields { get; set; }
         public string[] Values { get; set; }
-        public string WhereTerm { get; set; }
+        public string WhereT { get; set; }
 
         public override string ToSQL()
         {
@@ -94,7 +124,7 @@ namespace PGYShopingSystem
 
     public class ActDelete : Action
     {
-        public string WhereTerm { get; set; }
+        public static string WhereT { get; set; }
 
         public override string ToSQL()
         {
@@ -102,9 +132,9 @@ namespace PGYShopingSystem
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " delete " + TableName;
-                if (!string.IsNullOrEmpty(WhereTerm))
+                if (!string.IsNullOrEmpty(WhereT))
                 {
-                    SQL += " where " + WhereTerm;
+                    SQL += " where " + WhereT;
                 }
             }
             return SQL;

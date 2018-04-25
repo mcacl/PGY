@@ -3,7 +3,7 @@ using System.Web.Http;
 
 namespace PGYShopingSystem
 {
-    public class ActionAPI : ApiController
+    public class ActionAPIController : ApiController
     {
         // GET api/<controller>
         public IEnumerable<string> Get()
