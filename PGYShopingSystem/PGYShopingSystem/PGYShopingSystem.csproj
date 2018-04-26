@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="APIParmer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\ComClass.cs" />
     <Compile Include="Common\ComEnum.cs" />
     <Compile Include="Common\ComFile.cs" />
     <Compile Include="Common\ComWebSetting.cs" />
