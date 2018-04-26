@@ -14,34 +14,34 @@ namespace PGYShopingSystem
 
         public int Type { get; set; }
 
-        public object Data
+        public object Data { get; set; }
+
+        public object GetAct()
         {
-            get { return this; }
-            set
+            var type = (MyEnum)this.Type;
+            object obj = null;
+            switch (type)
             {
-                var type = (MyEnum) Type;
-                switch (type)
-                {
-                    case MyEnum.Select:
-                        value = JsonConvert.DeserializeObject(value.ToString());
-                        break;
-                    case MyEnum.Insert:
-                        value = JsonConvert.DeserializeObject(value.ToString());
-                        break;
-                    case MyEnum.Update:
-                        value = JsonConvert.DeserializeObject(value.ToString());
-                        break;
-                    case MyEnum.Delete:
-                        value = JsonConvert.DeserializeObject(value.ToString());
-                        break;
-                }
+                case MyEnum.Select:
+                    obj = JsonConvert.DeserializeObject<ActSelect>(Data.ToString());
+                    break;
+                case MyEnum.Insert:
+                    obj = JsonConvert.DeserializeObject<ActInsert>(Data.ToString());
+                    break;
+                case MyEnum.Update:
+                    obj = JsonConvert.DeserializeObject<ActUpdate>(Data.ToString());
+                    break;
+                case MyEnum.Delete:
+                    obj = JsonConvert.DeserializeObject<ActDelete>(Data.ToString());
+                    break;
             }
+            return obj;
         }
     }
 
     public abstract class Action
     {
-        public static string TableName { get; set; }
+        public string TableName { get; set; }
         public abstract string ToSQL();
     }
 
@@ -124,7 +124,7 @@ namespace PGYShopingSystem
 
     public class ActDelete : Action
     {
-        public static string WhereT { get; set; }
+        public string WhereT { get; set; }
 
         public override string ToSQL()
         {
@@ -139,5 +139,11 @@ namespace PGYShopingSystem
             }
             return SQL;
         }
+    }
+
+    public class ActResult
+    {
+        public int Code { get; set; }
+        public string Msg { get; set; }
     }
 }
