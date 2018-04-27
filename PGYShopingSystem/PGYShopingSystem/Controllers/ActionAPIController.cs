@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
-using System.Web.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using PGYShopingSystem.Common;
 
 namespace PGYShopingSystem
@@ -26,43 +25,46 @@ namespace PGYShopingSystem
         {
             var myenum = (APIParmer.MyEnum)parmer.Type;
             var SQL = "";
-            ActResult res = new ActResult();
+            var res = new ActResult();
             try
             {
                 switch (myenum)
                 {
                     case APIParmer.MyEnum.Select:
-                        ActSelect select = parmer.GetAct() as ActSelect;
+                        var select = parmer.GetAct() as ActSelect;
                         var selectsql = select.ToSQL();
                         SQL = selectsql;
+                        var dt = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBSelectDT(SQL);
+                        res.Data = JsonConvert.SerializeObject(dt);
                         break;
                     case APIParmer.MyEnum.Insert:
-                        ActInsert insert = parmer.GetAct() as ActInsert;
+                        var insert = parmer.GetAct() as ActInsert;
                         var insertsql = insert.ToSQL();
                         SQL = insertsql;
+                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
                         break;
                     case APIParmer.MyEnum.Update:
-                        ActUpdate update = parmer.GetAct() as ActUpdate;
+                        var update = parmer.GetAct() as ActUpdate;
                         var updatesql = update.ToSQL();
                         SQL = updatesql;
+                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
                         break;
                     case APIParmer.MyEnum.Delete:
-                        ActDelete delete = parmer.GetAct() as ActDelete;
+                        var delete = parmer.GetAct() as ActDelete;
                         var deletesql = delete.ToSQL();
                         SQL = deletesql;
+                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
                         break;
                 }
+                res.Code = (int)ComEnum.EnumActResult.Success;
+                res.Msg = "操作成功!";
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                res.Code = (int)ComEnum.EnumError.Exception;
+                res.Code = (int)ComEnum.EnumActResult.Exception;
                 res.Msg = "接口异常!请确认参数是否正确!";
+                Log.LogInBatchExceptWrite(ex, SQL);
             }
-            if (!string.IsNullOrEmpty(SQL))
-            {
-
-            }
-
             return JsonConvert.SerializeObject(res);
         }
 

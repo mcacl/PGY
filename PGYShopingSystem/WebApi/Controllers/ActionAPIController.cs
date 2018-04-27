@@ -45,9 +45,11 @@ namespace PGYShopingSystem
                     SQL = deletesql;
                     break;
             }
+
             if (!string.IsNullOrEmpty(SQL))
             {
             }
+
             return "";
         }
 

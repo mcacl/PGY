@@ -4,22 +4,27 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace DBExecute
 {
-    public class DBActC
+    public class DBAct
     {
         /// <summary>
         ///     连接字符串
         /// </summary>
-        public static string ConnectionStr { get; set; }
+        public static string ConnectionStr { get; private set; }
 
         /// <summary>
         ///     连接对象
         /// </summary>
         public static OracleConnection OrclConnect { get; private set; }
 
+        public static DBAct InitDBAct(string connectstring)
+        {
+            ConnectionStr = connectstring;
+            return new DBAct();
+        }
         /// <summary>
         ///     创建并打开connection
         /// </summary>
-        private static OracleConnection ConnenctOpen()
+        private OracleConnection ConnenctOpen()
         {
             if (!string.IsNullOrEmpty(ConnectionStr))
             {
@@ -35,7 +40,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
 
                 return OrclConnect;
@@ -49,7 +54,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="SQL">查询sql</param>
         /// <returns>dataset</returns>
-        public static DataSet DBSelectDS(string SQL)
+        public DataSet DBSelectDS(string SQL)
         {
             var dataSet = new DataSet();
             using (OrclConnect = ConnenctOpen())
@@ -64,7 +69,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -76,7 +81,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="SQL">查询sql</param>
         /// <returns>datatable</returns>
-        public static DataTable DBSelectDT(string SQL)
+        public DataTable DBSelectDT(string SQL)
         {
             var dataSet = new DataSet();
             using (OrclConnect = ConnenctOpen())
@@ -91,7 +96,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -105,7 +110,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="SQL">更新SQL语句</param>
         /// <returns>更新条数</returns>
-        public static int DBUpdata(string SQL)
+        public int DBUpdata(string SQL)
         {
             var num = 0;
             using (OrclConnect = ConnenctOpen())
@@ -118,7 +123,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -130,7 +135,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="SQL">插入SQL语句</param>
         /// <returns>拆入条数</returns>
-        public static int DBInsert(string SQL)
+        public int DBInsert(string SQL)
         {
             var num = 0;
             using (OrclConnect = ConnenctOpen())
@@ -143,7 +148,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -155,7 +160,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="SQL">删除SQL语句</param>
         /// <returns>删除条数</returns>
-        public static int DBDelete(string SQL)
+        public int DBDelete(string SQL)
         {
             var num = 0;
             using (OrclConnect = ConnenctOpen())
@@ -168,7 +173,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
             }
 
@@ -180,7 +185,7 @@ namespace DBExecute
         /// </summary>
         /// <param name="tup">1:datasql 2:pagesize页大小 3:curpage当前页</param>
         /// <returns>1.curpage当前页 2.pagenum页数 3.总条数 4.分页数据表</returns>
-        public static Tuple<int, int, int, DataTable> DBProcPage(Tuple<string, int, int> tup)
+        public Tuple<int, int, int, DataTable> DBProcPage(Tuple<string, int, int> tup)
         {
             using (OrclConnect = ConnenctOpen())
             {
@@ -220,7 +225,7 @@ namespace DBExecute
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
 
                 return new Tuple<int, int, int, DataTable>(tup.Item3, pagenum, numcount, dt);

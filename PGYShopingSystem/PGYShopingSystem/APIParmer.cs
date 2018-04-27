@@ -18,7 +18,7 @@ namespace PGYShopingSystem
 
         public object GetAct()
         {
-            var type = (MyEnum)this.Type;
+            var type = (MyEnum)Type;
             object obj = null;
             switch (type)
             {
@@ -35,6 +35,7 @@ namespace PGYShopingSystem
                     obj = JsonConvert.DeserializeObject<ActDelete>(Data.ToString());
                     break;
             }
+
             return obj;
         }
     }
@@ -57,15 +58,10 @@ namespace PGYShopingSystem
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " select " + Field + " from " + TableName;
-                if (!string.IsNullOrEmpty(WhereT))
-                {
-                    SQL = SQL + " where " + WhereT;
-                }
-                if (!string.IsNullOrEmpty(Orderby))
-                {
-                    SQL = SQL + " order by " + Orderby;
-                }
+                if (!string.IsNullOrEmpty(WhereT)) SQL = SQL + " where " + WhereT;
+                if (!string.IsNullOrEmpty(Orderby)) SQL = SQL + " order by " + Orderby;
             }
+
             return SQL;
         }
     }
@@ -83,16 +79,11 @@ namespace PGYShopingSystem
             {
                 SQL = " update " + TableName + " set ";
                 var fileval = "";
-                for (var i = 0; i < Fields.Length; i++)
-                {
-                    fileval += Fields[i] + "='" + Values[i] + "',";
-                }
+                for (var i = 0; i < Fields.Length; i++) fileval += Fields[i] + "='" + Values[i] + "',";
                 SQL = SQL + fileval.TrimEnd(',');
-                if (!string.IsNullOrEmpty(WhereT))
-                {
-                    SQL += SQL + " where " + WhereT;
-                }
+                if (!string.IsNullOrEmpty(WhereT)) SQL += SQL + " where " + WhereT;
             }
+
             return SQL;
         }
     }
@@ -116,8 +107,10 @@ namespace PGYShopingSystem
                     field += Fields[i] + ",";
                     value += "'" + Values[i] + "',";
                 }
+
                 SQL = SQL + field.Trim(',') + ") values(" + value.Trim(',') + ")";
             }
+
             return SQL;
         }
     }
@@ -132,11 +125,9 @@ namespace PGYShopingSystem
             if (!string.IsNullOrEmpty(TableName))
             {
                 SQL = " delete " + TableName;
-                if (!string.IsNullOrEmpty(WhereT))
-                {
-                    SQL += " where " + WhereT;
-                }
+                if (!string.IsNullOrEmpty(WhereT)) SQL += " where " + WhereT;
             }
+
             return SQL;
         }
     }
@@ -145,5 +136,6 @@ namespace PGYShopingSystem
     {
         public int Code { get; set; }
         public string Msg { get; set; }
+        public string Data { get; set; }
     }
 }

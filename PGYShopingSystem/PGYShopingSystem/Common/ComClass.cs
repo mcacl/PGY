@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace PGYShopingSystem.Common
 {
@@ -12,9 +9,8 @@ namespace PGYShopingSystem.Common
         {
             get
             {
-                return Path.Combine(ComWebSetting.LogPath, DateTime.Now.ToString("yyyy-MM-DD") + ".log");//log日志文件
+                return Path.Combine(ComWebSetting.LogPath, DateTime.Now.ToString("yyyy-MM-dd") + ".log"); //log日志文件
             }
         }
-
     }
 }

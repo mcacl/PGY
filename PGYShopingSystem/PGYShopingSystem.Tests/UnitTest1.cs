@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
 namespace PGYShopingSystem.Tests
@@ -9,16 +10,17 @@ namespace PGYShopingSystem.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            MyClass mc = new MyClass() { a = 1, b = "1" };
-            string json = "{\"Type\":\"4\",\"Data\":\"{\'TableName\':\'xs_h\',\'WhereT\':\'1=1\'}\"}";
-            var js = new APIParmer() { Type = 4, Data = "{'TableName':'xs_h','WhereT':'1=1'}" };
+            var dt = new DataTable();
+            dt.Columns.AddRange(new[]
+            {
+                new DataColumn("A", typeof(string)), new DataColumn("B", typeof(int))
+            });
+            var dr = dt.NewRow();
+            dr[0] = "a1";
+            dr[1] = 1;
+            dt.Rows.Add(dr);
+            var js = JsonConvert.SerializeObject(dt);
             Assert.IsTrue(js != null);
         }
-    }
-
-    class MyClass
-    {
-        public int a;
-        public string b;
     }
 }
