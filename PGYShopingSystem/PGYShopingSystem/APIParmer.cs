@@ -20,6 +20,7 @@ namespace PGYShopingSystem
                     obj = JsonConvert.DeserializeObject<ActSelect>(Data.ToString());
                     break;
                 case ComEnum.ActEnum.Insert:
+                    //{"Type":"2","Data":"{'tablename':'manager_user','field':'-name,sex,age,phone-','values':'-qq10-,-0-,-10-,\\'1234567896666\\''}"}
                     obj = JsonConvert.DeserializeObject<ActInsert>(Data.ToString());
                     break;
                 case ComEnum.ActEnum.Update:
