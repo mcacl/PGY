@@ -1,38 +1,35 @@
 ﻿using Newtonsoft.Json;
+using PGYShopingSystem.Common;
 
 namespace PGYShopingSystem
 {
     public class APIParmer
     {
-        public enum MyEnum
-        {
-            Select = 1,
-            Insert = 2,
-            Update = 3,
-            Delete = 4
-        }
-
         public int Type { get; set; }
 
         public object Data { get; set; }
 
         public object GetAct()
         {
-            var type = (MyEnum)Type;
+            var type = (ComEnum.ActEnum)Type;
             object obj = null;
             switch (type)
             {
-                case MyEnum.Select:
+                case ComEnum.ActEnum.Select:
+                    //{"Type":"1","Data":"{'tablename':'manager_user t','field':'t.*','Wheret':'t.name=\\'qq5\\'','Orderby':'id'}"}
                     obj = JsonConvert.DeserializeObject<ActSelect>(Data.ToString());
                     break;
-                case MyEnum.Insert:
+                case ComEnum.ActEnum.Insert:
                     obj = JsonConvert.DeserializeObject<ActInsert>(Data.ToString());
                     break;
-                case MyEnum.Update:
+                case ComEnum.ActEnum.Update:
                     obj = JsonConvert.DeserializeObject<ActUpdate>(Data.ToString());
                     break;
-                case MyEnum.Delete:
+                case ComEnum.ActEnum.Delete:
                     obj = JsonConvert.DeserializeObject<ActDelete>(Data.ToString());
+                    break;
+                case ComEnum.ActEnum.Other:
+                    obj = Data.ToString();
                     break;
             }
 
@@ -55,7 +52,7 @@ namespace PGYShopingSystem
         public override string ToSQL()
         {
             var SQL = "";
-            if (!string.IsNullOrEmpty(TableName))
+            if (!string.IsNullOrEmpty(TableName) && !string.IsNullOrEmpty(Field))
             {
                 SQL = " select " + Field + " from " + TableName;
                 if (!string.IsNullOrEmpty(WhereT)) SQL = SQL + " where " + WhereT;
@@ -75,7 +72,7 @@ namespace PGYShopingSystem
         public override string ToSQL()
         {
             var SQL = "";
-            if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
+            if (!string.IsNullOrEmpty(TableName) && Fields != null && Values != null && Fields.Length == Values.Length)
             {
                 SQL = " update " + TableName + " set ";
                 var fileval = "";
@@ -90,27 +87,16 @@ namespace PGYShopingSystem
 
     public class ActInsert : Action
     {
-        public string[] Fields { get; set; }
-        public string[] Values { get; set; }
-        public string WhereT { get; set; }
+        public string Fields { get; set; }
+        public string Values { get; set; }
 
         public override string ToSQL()
         {
             var SQL = "";
-            if (!string.IsNullOrEmpty(TableName) && Fields.Length == Values.Length)
+            if (!string.IsNullOrEmpty(TableName) && Fields != null && Values != null && Fields.Split(',').Length == Values.Split(',').Length)
             {
-                SQL = " insert into " + TableName + "(";
-                var field = ",";
-                var value = ",";
-                for (var i = 0; i < Fields.Length; i++)
-                {
-                    field += Fields[i] + ",";
-                    value += "'" + Values[i] + "',";
-                }
-
-                SQL = SQL + field.Trim(',') + ") values(" + value.Trim(',') + ")";
+                SQL = " insert into " + TableName + "(" + Fields + ") values(" + Values + ")";
             }
-
             return SQL;
         }
     }

@@ -23,47 +23,80 @@ namespace PGYShopingSystem
         // POST api/<controller>
         public string Post(APIParmer parmer)
         {
-            var myenum = (APIParmer.MyEnum)parmer.Type;
             var SQL = "";
             var res = new ActResult();
             try
             {
+                var myenum = (ComEnum.ActEnum)parmer.Type;
                 switch (myenum)
                 {
-                    case APIParmer.MyEnum.Select:
+                    case ComEnum.ActEnum.Select:
                         var select = parmer.GetAct() as ActSelect;
                         var selectsql = select.ToSQL();
                         SQL = selectsql;
-                        var dt = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBSelectDT(SQL);
-                        res.Data = JsonConvert.SerializeObject(dt);
+                        if (!string.IsNullOrEmpty(SQL))
+                        {
+                            var dt = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBSelectDT(SQL);
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                            res.Data = JsonConvert.SerializeObject(dt);
+                        }
                         break;
-                    case APIParmer.MyEnum.Insert:
+                    case ComEnum.ActEnum.Insert:
                         var insert = parmer.GetAct() as ActInsert;
                         var insertsql = insert.ToSQL();
                         SQL = insertsql;
-                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
+                        if (!string.IsNullOrEmpty(SQL))
+                        {
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
+                        }
                         break;
-                    case APIParmer.MyEnum.Update:
+                    case ComEnum.ActEnum.Update:
                         var update = parmer.GetAct() as ActUpdate;
                         var updatesql = update.ToSQL();
                         SQL = updatesql;
-                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
+                        if (!string.IsNullOrEmpty(SQL))
+                        {
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
+                        }
                         break;
-                    case APIParmer.MyEnum.Delete:
+                    case ComEnum.ActEnum.Delete:
                         var delete = parmer.GetAct() as ActDelete;
                         var deletesql = delete.ToSQL();
                         SQL = deletesql;
-                        res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
+                        if (!string.IsNullOrEmpty(SQL))
+                        {
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
+                        }
+                        break;
+                    case ComEnum.ActEnum.Other:
+                        SQL = parmer.GetAct().ToString();
+                        if (!string.IsNullOrEmpty(SQL))
+                        {
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBOther(SQL).ToString();
+                        }
                         break;
                 }
-                res.Code = (int)ComEnum.EnumActResult.Success;
-                res.Msg = "操作成功!";
+
+                if (res.Code != (int)ComEnum.EnumActResult.Success)
+                {
+                    res.Code = (int)ComEnum.EnumActResult.Error;
+                    res.Msg = "操作失败!参数转换不合规范";
+                }
             }
             catch (Exception ex)
             {
                 res.Code = (int)ComEnum.EnumActResult.Exception;
                 res.Msg = "接口异常!请确认参数是否正确!";
-                Log.LogInBatchExceptWrite(ex, SQL);
+                Log.LogInBatchExceptWrite(ex, parmer.Data.ToString(), SQL);
             }
             return JsonConvert.SerializeObject(res);
         }

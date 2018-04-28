@@ -30,12 +30,14 @@ namespace DBExecute
             {
                 try
                 {
-                    if (OrclConnect == null)
+                    if (OrclConnect != null)
                     {
-                        var orclcon = new OracleConnection(ConnectionStr);
-                        OrclConnect = orclcon;
+                        OrclConnect.Close();
+                        OrclConnect.Dispose();
+                        OrclConnect = null;
                     }
-
+                    var orclcon = new OracleConnection(ConnectionStr);
+                    OrclConnect = orclcon;
                     if (OrclConnect.State != ConnectionState.Open) OrclConnect.Open();
                 }
                 catch (Exception ex)
@@ -61,15 +63,22 @@ namespace DBExecute
             {
                 try
                 {
-                    var cmd = new OracleCommand(SQL, OrclConnect);
-                    var oda = new OracleDataAdapter();
-                    oda.SelectCommand = cmd;
-                    oda.Fill(dataSet);
-                    OrclConnect.Close();
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        var oda = new OracleDataAdapter();
+                        oda.SelectCommand = cmd;
+                        oda.Fill(dataSet);
+                        OrclConnect.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
             }
 
@@ -88,15 +97,22 @@ namespace DBExecute
             {
                 try
                 {
-                    var cmd = new OracleCommand(SQL, OrclConnect);
-                    var oda = new OracleDataAdapter();
-                    oda.SelectCommand = cmd;
-                    oda.Fill(dataSet);
-                    OrclConnect.Close();
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        var oda = new OracleDataAdapter();
+                        oda.SelectCommand = cmd;
+                        oda.Fill(dataSet);
+                        OrclConnect.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
             }
 
@@ -117,13 +133,20 @@ namespace DBExecute
             {
                 try
                 {
-                    var cmd = new OracleCommand(SQL, OrclConnect);
-                    num = cmd.ExecuteNonQuery();
-                    OrclConnect.Close();
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        num = cmd.ExecuteNonQuery();
+                        OrclConnect.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
             }
 
@@ -142,13 +165,20 @@ namespace DBExecute
             {
                 try
                 {
-                    var cmd = new OracleCommand(SQL, OrclConnect);
-                    num = cmd.ExecuteNonQuery();
-                    OrclConnect.Close();
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        num = cmd.ExecuteNonQuery();
+                        OrclConnect.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
             }
 
@@ -167,19 +197,56 @@ namespace DBExecute
             {
                 try
                 {
-                    var cmd = new OracleCommand(SQL, OrclConnect);
-                    num = cmd.ExecuteNonQuery();
-                    OrclConnect.Close();
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        num = cmd.ExecuteNonQuery();
+                        OrclConnect.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                }
             }
 
             return num;
         }
+        /// <summary>
+        /// 执行多条sql语句或特殊语句
+        /// </summary>
+        /// <param name="SQL">sql脚本</param>
+        /// <returns>受影响条数</returns>
+        public int DBOther(string SQL)
+        {
+            var num = 0;
+            using (OrclConnect = ConnenctOpen())
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(SQL))
+                    {
+                        var cmd = new OracleCommand(SQL, OrclConnect);
+                        num = cmd.ExecuteNonQuery();
+                        OrclConnect.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                }
+            }
 
+            return num;
+        }
         /// <summary>
         ///     执行分页的存储过程
         /// </summary>
@@ -226,6 +293,10 @@ namespace DBExecute
                 catch (Exception ex)
                 {
                     throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
 
                 return new Tuple<int, int, int, DataTable>(tup.Item3, pagenum, numcount, dt);

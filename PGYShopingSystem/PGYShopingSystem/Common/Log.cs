@@ -50,9 +50,9 @@ namespace PGYShopingSystem.Common
             ComFile.CreateFile(path);
             using (var fs = File.Open(path, FileMode.Append))
             {
-                string logtext = "时间:" + DateTime.Now.ToString("yyyy-MM-DD HH:mm:ss") + Environment.NewLine + "异常消息:" +
+                string logtext = "时间:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + "异常消息:" +
                                  ex.Message + Environment.NewLine + "内部异常:" + ex.InnerException + Environment.NewLine +
-                                 "附加信息:" + infomsg + Environment.NewLine + "SQL参数:" + parmdata + Environment.NewLine;
+                                 "附加信息:" + infomsg + Environment.NewLine + "SQL参数:" + parmdata + Environment.NewLine + "------------------------";
                 var bt = Encoding.UTF8.GetBytes(logtext);
                 fs.Write(bt, 0, bt.Length);
                 fs.Close();
