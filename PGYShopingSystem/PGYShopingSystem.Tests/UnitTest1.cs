@@ -11,16 +11,10 @@ namespace PGYShopingSystem.Tests
         public void TestMethod1()
         {
             var dt = new DataTable();
-            dt.Columns.AddRange(new[]
-            {
-                new DataColumn("A", typeof(string)), new DataColumn("B", typeof(int))
-            });
-            var dr = dt.NewRow();
-            dr[0] = "a1";
-            dr[1] = 1;
-            dt.Rows.Add(dr);
-            var js = JsonConvert.SerializeObject(dt);
-            Assert.IsTrue(js != null);
+            string Data = null;
+            //string SQl = Data.Replace("~", "\"").Replace("!", "'");
+            var a = Data.Split(',');
+            Assert.IsTrue(a != null);
         }
     }
 }

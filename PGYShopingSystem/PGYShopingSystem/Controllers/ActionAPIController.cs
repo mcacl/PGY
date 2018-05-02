@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
+using Oracle.ManagedDataAccess.Client;
 using PGYShopingSystem.Common;
 
 namespace PGYShopingSystem
 {
     public class ActionAPIController : ApiController
     {
-        // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new[] { "value1", "value2" };
-        }
-
         // GET api/<controller>/5
         public string Get(int id)
         {
@@ -48,9 +43,9 @@ namespace PGYShopingSystem
                         SQL = insertsql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
                         }
                         break;
                     case ComEnum.ActEnum.Update:
@@ -59,9 +54,9 @@ namespace PGYShopingSystem
                         SQL = updatesql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
                         }
                         break;
                     case ComEnum.ActEnum.Delete:
@@ -70,18 +65,39 @@ namespace PGYShopingSystem
                         SQL = deletesql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
                         }
                         break;
                     case ComEnum.ActEnum.Other:
                         SQL = parmer.GetAct().ToString();
                         if (!string.IsNullOrEmpty(SQL))
                         {
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBOther(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBOther(SQL).ToString();
+                        }
+                        break;
+                    case ComEnum.ActEnum.SelectPageProc:
+                        PageParam pageparam = parmer.GetAct() as PageParam;
+                        if (pageparam != null)
+                        {
+                            var intup = new Tuple<string, int, int>(pageparam.PageSQL, pageparam.PageSize, pageparam.PageCurrt);
+                            var outtup = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBProcPage(intup);
+                            ComPage page = new ComPage(outtup);
+                            res.Data = JsonConvert.SerializeObject(page);
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
+                        }
+                        break;
+                    case ComEnum.ActEnum.Proc:
+                        OracleParameter procparam = parmer.GetAct() as OracleParameter;
+                        if (!string.IsNullOrEmpty()&&procparam != null)
+                        {
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(SQL).ToString();
+                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Msg = "操作成功!";
                         }
                         break;
                 }

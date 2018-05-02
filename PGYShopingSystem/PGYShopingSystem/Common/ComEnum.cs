@@ -20,7 +20,9 @@
             Insert = 2,
             Update = 3,
             Delete = 4,
-            Other = 5
+            Other = 5,
+            Proc = 6,
+            SelectPageProc = 11,//存储过程分页查询
         }
     }
 }

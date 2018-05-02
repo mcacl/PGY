@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace DBExecute
 {
@@ -92,7 +94,7 @@ namespace DBExecute
         /// <returns>datatable</returns>
         public DataTable DBSelectDT(string SQL)
         {
-            var dataSet = new DataSet();
+            var datatable = new DataTable();
             using (OrclConnect = ConnenctOpen())
             {
                 try
@@ -102,7 +104,7 @@ namespace DBExecute
                         var cmd = new OracleCommand(SQL, OrclConnect);
                         var oda = new OracleDataAdapter();
                         oda.SelectCommand = cmd;
-                        oda.Fill(dataSet);
+                        oda.Fill(datatable);
                         OrclConnect.Close();
                     }
                 }
@@ -115,9 +117,6 @@ namespace DBExecute
                     if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
             }
-
-            var datatable = new DataTable();
-            datatable = dataSet.Tables.Count > 0 ? dataSet.Tables[0] : datatable;
             return datatable;
         }
 
@@ -248,11 +247,11 @@ namespace DBExecute
             return num;
         }
         /// <summary>
-        ///     执行分页的存储过程
+        ///     执行分页的存储过程 IN1:datasql 2:pagesize页大小 3:curpage当前页 OUT:1.curpage当前页 2.pagenum页数 3.总条数 4.pagesize 5.分页数据表
         /// </summary>
         /// <param name="tup">1:datasql 2:pagesize页大小 3:curpage当前页</param>
-        /// <returns>1.curpage当前页 2.pagenum页数 3.总条数 4.分页数据表</returns>
-        public Tuple<int, int, int, DataTable> DBProcPage(Tuple<string, int, int> tup)
+        /// <returns>1.curpage当前页 2.pagenum页数 3.总条数 4.pagesize 5.分页数据表</returns>
+        public Tuple<int, int, int, int, DataTable> DBProcPage(Tuple<string, int, int> tup)
         {
             using (OrclConnect = ConnenctOpen())
             {
@@ -279,13 +278,14 @@ namespace DBExecute
                     pars[1].Value = tup.Item2; //pagesize 页大小
                     pars[2].Value = tup.Item3; //curpage 当前页
                     cmd.Parameters.AddRange(pars);
-                    cmd.ExecuteNonQuery();
+                    //cmd.ExecuteNonQuery();
+                    var oda = new OracleDataAdapter(cmd);
+                    oda.Fill(dt);//得到游标结果
 
                     foreach (OracleParameter parameter in cmd.Parameters)
                     {
                         if (parameter.ParameterName == "pagenum") pagenum = int.Parse(parameter.Value.ToString());
-                        if (parameter.ParameterName == "numcount") numcount = int.Parse(parameter.Value.ToString());
-                        if (parameter.ParameterName == "v_cur") dt = parameter.Value as DataTable;
+                        else if (parameter.ParameterName == "numcount") numcount = int.Parse(parameter.Value.ToString());
                     }
 
                     OrclConnect.Close();
@@ -299,7 +299,48 @@ namespace DBExecute
                     if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
                 }
 
-                return new Tuple<int, int, int, DataTable>(tup.Item3, pagenum, numcount, dt);
+                return new Tuple<int, int, int, int, DataTable>(tup.Item3, pagenum, numcount, tup.Item2, dt);
+            }
+        }
+        /// <summary>
+        ///无返回值或有表返回的存储过程 无返回值时objec没有值需要返回是object是datatable
+        /// </summary>
+        /// <param name="procname">存储过程名</param>
+        /// <param name="param">参数数据</param>
+        /// <param name="isReturnTable">是否有表返回</param>
+        /// <returns>object</returns>
+        public object Proc(string procname, OracleParameter[] param, bool isReturnTable = false)
+        {
+            using (OrclConnect = ConnenctOpen())
+            {
+                var obj = new object();
+                var dt = new DataTable();
+                try
+                {
+                    var cmd = new OracleCommand(procname, OrclConnect);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddRange(param);
+                    if (!isReturnTable)
+                    {
+                        var oda = new OracleDataAdapter(cmd);
+                        oda.Fill(dt);
+                        obj = dt;
+                    }
+                    else
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                }
+
+                return obj;
             }
         }
     }
