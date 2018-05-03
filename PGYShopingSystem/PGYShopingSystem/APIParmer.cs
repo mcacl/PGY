@@ -41,7 +41,7 @@ namespace PGYShopingSystem
                     obj = JsonConvert.DeserializeObject<PageParam>(SQl);
                     break;
                 case ComEnum.ActEnum.Proc:
-                    obj = JsonConvert.DeserializeObject<OracleParameter>(SQl);
+                    obj = JsonConvert.DeserializeObject<ComOracleParam>(SQl);
                     break;
             }
 

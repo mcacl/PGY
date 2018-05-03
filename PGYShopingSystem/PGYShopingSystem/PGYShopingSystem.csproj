@@ -108,6 +108,7 @@
     <Compile Include="Common\ComClass.cs" />
     <Compile Include="Common\ComEnum.cs" />
     <Compile Include="Common\ComFile.cs" />
+    <Compile Include="Common\ComOracleParam.cs" />
     <Compile Include="Common\ComWebSetting.cs" />
     <Compile Include="Common\Log.cs" />
     <Compile Include="Common\ComPage.cs" />

@@ -8,7 +8,8 @@ namespace PGYShopingSystem.Common
 {
     public class ComOracleParam
     {
-        public string SQL { get; set; }
-        public OracleParameter {get;set}
+        public string ProcName { get; set; }
+        public OracleParameter[] Param { get; set; }
+        public bool IsReturnTable { get; set; }
     }
 }
