@@ -95,7 +95,7 @@ namespace PGYShopingSystem
                         ComProcParam procparam = parmer.GetAct() as ComProcParam;
                         if (procparam != null)
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.Param, procparam.IsRetTable).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.GetOracleParam(), procparam.IsRetTable).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
