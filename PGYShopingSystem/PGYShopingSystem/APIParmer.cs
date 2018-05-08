@@ -14,7 +14,7 @@ namespace PGYShopingSystem
         {
             var type = (ComEnum.ActEnum)Type;
             object obj = null;
-            var SQl = Data.ToString().Replace("~", "\\\"").Replace("^", "\\\'");
+            var SQl = Data.ToString().Replace("~", "\\\"").Replace("^", "\\\'");//~双引号 ^单引号
             switch (type)
             {
                 case ComEnum.ActEnum.Select:
@@ -41,7 +41,7 @@ namespace PGYShopingSystem
                     obj = JsonConvert.DeserializeObject<PageParam>(SQl);
                     break;
                 case ComEnum.ActEnum.Proc:
-                    obj = JsonConvert.DeserializeObject<ComOracleParam>(SQl);
+                    obj = JsonConvert.DeserializeObject<ComProcParam>(SQl);
                     break;
             }
 
