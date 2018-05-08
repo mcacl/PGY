@@ -92,10 +92,10 @@ namespace PGYShopingSystem
                         }
                         break;
                     case ComEnum.ActEnum.Proc:
-                        ComProcParam procparam = parmer.GetAct() as ComProcParam;
+                        ComOracleParam procparam = parmer.GetAct() as ComOracleParam;
                         if (procparam != null)
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.Param, procparam.IsRetTable).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.Param, procparam.IsReturnTable).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }

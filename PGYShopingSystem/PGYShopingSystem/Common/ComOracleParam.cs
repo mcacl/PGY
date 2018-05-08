@@ -6,16 +6,10 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace PGYShopingSystem.Common
 {
-    public class ComProcParam
+    public class ComOracleParam
     {
         public string ProcName { get; set; }
         public OracleParameter[] Param { get; set; }
-        public bool IsRetTable { get; set; }
-    }
-
-    public class ComOracleParam
-    {
-        public string ParamName { get; set; }
-         
+        public bool IsReturnTable { get; set; }
     }
 }
