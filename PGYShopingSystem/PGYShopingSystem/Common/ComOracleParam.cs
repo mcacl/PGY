@@ -45,7 +45,10 @@ namespace PGYShopingSystem.Common
                             oracledirection = ParameterDirection.ReturnValue; break;
                     }
                     OracleParameter oracleparam = new OracleParameter(comOracleParam.ParamName, oracledbtype, oracledirection);
-                    oracleparam.Value = comOracleParam.Value;
+                    if (!string.IsNullOrEmpty(comOracleParam.Value))
+                    {
+                        oracleparam.Value = comOracleParam.Value;
+                    }
                     oplist.Add(oracleparam);
                 }
             }

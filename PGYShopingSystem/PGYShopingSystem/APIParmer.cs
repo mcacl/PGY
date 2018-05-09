@@ -41,6 +41,8 @@ namespace PGYShopingSystem
                     obj = JsonConvert.DeserializeObject<PageParam>(SQl);
                     break;
                 case ComEnum.ActEnum.Proc:
+                    //注意sql用select *时  一定要带别名 t.*
+                    /*{"Type":"6","Data":{"ProcName":"Pager","Param":[{"ParamName":"datasql","DbType":"varchar2","Direction":"in","Value":"select t.* from manage_user t"},{"ParamName":"pagesize","DbType":"int32","Direction":"in","Value":"5"},{"ParamName":"currtpage","DbType":"int32","Direction":"in","Value":"1"},{"ParamName":"pagenum","DbType":"int32","Direction":"out","Value":""},{"ParamName":"numcount","DbType":"int32","Direction":"out","Value":""},{"ParamName":"v_cur","DbType":"cursor","Direction":"out","Value":""}],"IsRetTable":"True"}}*/
                     obj = JsonConvert.DeserializeObject<ComProcParam>(SQl);
                     break;
             }
