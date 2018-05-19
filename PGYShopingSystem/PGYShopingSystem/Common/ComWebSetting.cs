@@ -13,7 +13,7 @@ namespace PGYShopingSystem.Common
             {
                 var logpath = ConfigurationManager.AppSettings["LogPath"];
                 LogPath = logpath;//日志文件路径不含文件名
-                ConnectString = ConfigurationManager.ConnectionStrings["PGYConstring"].ToString();
+                ConnectString = ConfigurationManager.ConnectionStrings["Sqlite"].ToString();
             }
             catch (System.Exception ex)
             {

@@ -1,27 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.OleDb;
+using System.Runtime.CompilerServices;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 
 namespace DBExecute
 {
-    public class DBAct
+    public class DBAct : IDBAct
     {
-        /// <summary>
-        ///     连接字符串
-        /// </summary>
-        public static string ConnectionStr { get; private set; }
-
         /// <summary>
         ///     连接对象
         /// </summary>
-        public static OracleConnection OrclConnect { get; private set; }
-
-        public static DBAct InitDBAct(string connectstring)
+        public OracleConnection OrclConnect { get; private set; }
+        public string ConnectionStr { get; set; }
+        public string DBType { get; private set; }
+        private DBActBase DBABase { get; set; }
+        private int DBTypeValue { get; set; }
+        public static DBAct InitDBAct(DBTypeEnum.DBType dbtype, string connectstring)
         {
-            ConnectionStr = connectstring;
-            return new DBAct();
+            DBAct dbact = new DBAct();
+            dbact.ConnectionStr = connectstring;
+            //DBABase = new DBActBase(DBTypeEnum.DBType.Oracle, connectstring);
+            dbact.DBType = Enum.GetName(dbtype.GetType(), dbtype);
+            dbact.DBTypeValue = (int)dbtype;
+            dbact.DBABase = new DBActBase(connectstring);
+            //this.ConnectionStr = connectstring;
+            //this.DBType = Enum.GetName(dbtype.GetType(), dbtype);
+            //this.DBTypeValue = (int)dbtype;
+            //this.DBABase = new DBActBase(connectstring);
+            return dbact;
         }
         /// <summary>
         ///     创建并打开connection
@@ -38,9 +47,11 @@ namespace DBExecute
                         OrclConnect.Dispose();
                         OrclConnect = null;
                     }
-                    var orclcon = new OracleConnection(ConnectionStr);
+                    //var orclcon = new OracleConnection(ConnectionStr);
+                    var orclcon = DBABase.GetConnection<OracleConnection>("");
                     OrclConnect = orclcon;
-                    if (OrclConnect.State != ConnectionState.Open) OrclConnect.Open();
+                    if (OrclConnect.State != ConnectionState.Open)
+                        OrclConnect.Open();
                 }
                 catch (Exception ex)
                 {
@@ -52,7 +63,107 @@ namespace DBExecute
 
             throw new Exception("数据库连接字符串未设置！");
         }
+        public DataSet DBSelectDS1(string SQL)
+        {
+            var dataSet = new DataSet();
+            if (!string.IsNullOrEmpty(SQL) && DBABase != null)
+            {
+                DBTypeEnum.DBType dbtype = (DBTypeEnum.DBType)DBTypeValue;
+                switch (dbtype)
+                {
+                    case DBTypeEnum.DBType.Oracle:
+                        var tupOracle = DBABase.GetOracleConnnect(SQL);
+                        using (var connection = tupOracle.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupOracle.Item2;
+                                var adapt = tupOracle.Item3;
+                                adapt.Fill(dataSet);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Access:
+                        var tupAccess = DBABase.GetAccessConnnect(SQL);
+                        using (var connection = tupAccess.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupAccess.Item2;
+                                var adapt = tupAccess.Item3;
+                                adapt.Fill(dataSet);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.SqlServer:
+                        var tupSqlServer = DBABase.GetSqlServerConnnect(SQL);
+                        using (var connection = tupSqlServer.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlServer.Item2;
+                                var adapt = tupSqlServer.Item3;
+                                adapt.Fill(dataSet);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Sqlite:
+                        var tupSqlite = DBABase.GetSqliteConnnect(SQL);
+                        using (var connection = tupSqlite.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlite.Item2;
+                                var adapt = tupSqlite.Item3;
+                                adapt.Fill(dataSet);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                }
+            }
 
+            return dataSet;
+        }
         /// <summary>
         ///     查询 返回dataset
         /// </summary>
@@ -80,7 +191,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
 
@@ -114,7 +226,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
             return datatable;
@@ -145,7 +258,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
 
@@ -177,7 +291,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
 
@@ -209,7 +324,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
 
@@ -240,7 +356,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
             }
 
@@ -284,8 +401,10 @@ namespace DBExecute
 
                     foreach (OracleParameter parameter in cmd.Parameters)
                     {
-                        if (parameter.ParameterName == "pagenum") pagenum = int.Parse(parameter.Value.ToString());
-                        else if (parameter.ParameterName == "numcount") numcount = int.Parse(parameter.Value.ToString());
+                        if (parameter.ParameterName == "pagenum")
+                            pagenum = int.Parse(parameter.Value.ToString());
+                        else if (parameter.ParameterName == "numcount")
+                            numcount = int.Parse(parameter.Value.ToString());
                     }
 
                     OrclConnect.Close();
@@ -296,7 +415,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
 
                 return new Tuple<int, int, int, int, DataTable>(tup.Item3, pagenum, numcount, tup.Item2, dt);
@@ -337,7 +457,8 @@ namespace DBExecute
                 }
                 finally
                 {
-                    if (OrclConnect.State != ConnectionState.Closed) OrclConnect.Close();
+                    if (OrclConnect.State != ConnectionState.Closed)
+                        OrclConnect.Close();
                 }
 
                 return obj;

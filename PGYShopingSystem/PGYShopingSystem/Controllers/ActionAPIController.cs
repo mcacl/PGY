@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using DBExecute;
 using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using PGYShopingSystem.Common;
@@ -20,9 +21,11 @@ namespace PGYShopingSystem
         {
             var SQL = "";
             var res = new ActResult();
+            var type = DBTypeEnum.DBType.Sqlite;
             try
             {
                 var myenum = (ComEnum.ActEnum)parmer.Type;
+                //DBAct dbact = new DBAct();
                 switch (myenum)
                 {
                     case ComEnum.ActEnum.Select:
@@ -31,19 +34,20 @@ namespace PGYShopingSystem
                         SQL = selectsql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            var dt = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBSelectDT(SQL);
+                            //var dt = dbact.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDS1(SQL);
+                            var dt = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDS1(SQL);
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                             res.Data = JsonConvert.SerializeObject(dt);
                         }
                         break;
-                    case ComEnum.ActEnum.Insert:
+                    /*case ComEnum.ActEnum.Insert:
                         var insert = parmer.GetAct() as ActInsert;
                         var insertsql = insert.ToSQL();
                         SQL = insertsql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBInsert(SQL).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBInsert(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
@@ -54,7 +58,7 @@ namespace PGYShopingSystem
                         SQL = updatesql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
@@ -65,7 +69,7 @@ namespace PGYShopingSystem
                         SQL = deletesql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBDelete(SQL).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBDelete(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
@@ -74,7 +78,7 @@ namespace PGYShopingSystem
                         SQL = parmer.GetAct().ToString();
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBOther(SQL).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBOther(SQL).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
@@ -84,7 +88,7 @@ namespace PGYShopingSystem
                         if (pageparam != null)
                         {
                             var intup = new Tuple<string, int, int>(pageparam.PageSQL, pageparam.PageSize, pageparam.PageCurrt);
-                            var outtup = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).DBProcPage(intup);
+                            var outtup = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBProcPage(intup);
                             ComPage page = new ComPage(outtup);
                             res.Data = JsonConvert.SerializeObject(page);
                             res.Code = (int)ComEnum.EnumActResult.Success;
@@ -95,13 +99,12 @@ namespace PGYShopingSystem
                         ComProcParam procparam = parmer.GetAct() as ComProcParam;
                         if (procparam != null)
                         {
-                            res.Data = DBExecute.DBAct.InitDBAct(ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.GetOracleParam(), procparam.IsRetTable).ToString();
+                            res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.GetOracleParam(), procparam.IsRetTable).ToString();
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
-                        break;
+                        break;*/
                 }
-
                 if (res.Code != (int)ComEnum.EnumActResult.Success)
                 {
                     res.Code = (int)ComEnum.EnumActResult.Error;
