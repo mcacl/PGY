@@ -1,0 +1,110 @@
+<html>
+<script type="text/javaScript">
+String.prototype.format = function() {  
+    var result=this;  
+    if (arguments.length == 0)  
+        return null;  
+    for ( var i = 0; i < arguments.length; i++) {  
+        var re = new RegExp('\\{' + (i) + '\\}', 'gm');  
+        result = result.replace(re, arguments[i]);  
+    }  	
+    return result;  
+}
+</script>
+<body>
+</body>
+<script type="text/javaScript">
+var key='PGY';
+var str="{'tAblename':'xs_zdjbxx','wheret':''}";
+var str="{\"Type\":\"1\",\"Data\":\"{'tablename':'xs_zdjbxx t','fields':'zl,ysdm','WhereT':'t.zddm=^610821104200GB00039^','Orderby':'t.bsm'}\"}";
+
+var obj1=seld("1","xs_zdjbxx t","t.zl,t.ysdm","t.zddm=^610821104200GB00039^","t.bsm",true);
+var obj=seld("1","xs_zdjbxx t","t.zl,t.ysdm","t.zddm=^610821104200GB00039^","t.bsm");
+var stepk1=obj1.Data.length%(key.length%5);
+var stepk=obj.Data.length%(key.length%5);
+var co=code(obj.Data);
+var eco=ecode(co);
+var cow=code(obj1.Data);
+document.write('key：'+key+' step：'+stepk+' len:'+obj.Data.length+'<br/>');
+document.write('format：'+JSON.stringify(obj1)+'  len:'+obj1.Data.length+'<br/>');
+document.write('forjam：'+JSON.stringify(obj)+'  len:'+obj.Data.length+'<br/>');
+document.write('ceshiz：{"Type":"1","Data":"'+"Ë'Äa²lµn±mµ''Ès¯z´j²xÈ Ä'|'¶iµl´sw:wz¼,És´mw,wW¸eÂe¤''Ä.Êd´m^181020B03^w,woÂdµr²yw:wt~bÃmw}"+'<br/>');
+var objj=obj;
+objj.Data=jiami(objj.Data,key,true,stepk);
+document.write('jiemaf：'+JSON.stringify(objj)+'  len:'+objj.Data.length+'<br/>');
+document.write('解密编码：'+co+'<br/>'+'反密字符：'+eco+'<br/>'+'未加密码：'+cow+'<br/>');
+//"{0}-{1}-{2}".format("xx","yy","zz")  
+//显示xx-yy-zz  
+
+//{"Type":"1","Data":"{'tablename':'xs_zdjbxx t','fields':'zl,ysdm','WhereT':'t.zddm=^610821104200GB00039^'}"}
+
+function seld(typ,tbn,fid,whe,ord,isnoenc){
+	var istr={Type:typ,Data:""};
+	isnoenc=!isnoenc?true:false;
+	if(typ.length>0&&tbn.length>0&&fid.length>0){		
+		istr={Type:typ,Data:"{'tablename':'{0}','fields':'{1}','WhereT':'{2}','orderby':'{3}'}".format(tbn,fid,whe,ord)};
+	}	
+	if(isnoenc){
+		if(istr.Data.length>0){
+			var	stepk=istr.Data.length%(key.length%5);
+			istr.Data=jiami(istr.Data,key,false,stepk);
+		}
+	}
+	return istr;
+}
+
+function jiami(str,key,isundo,step){
+	var data="";
+	step=!step?1:step;
+	if(str.length>0&&key.length>0){
+		for(a=0;a<str.length;a++){
+			var code=str.charCodeAt(a);
+			var Y=a%key.length;
+			var keycode=key.charCodeAt(Y);
+			var tempCode=isundo? code-keycode:code+keycode;
+			//var tempCode=isundo? code-1:code+1;
+			if(tempCode>=65536){tempCode=code;}
+			data+=a % step == 0 ?String.fromCharCode(tempCode):str[a];	
+		}		
+	}
+	return data;
+}
+function jiemi(str,key){
+	var data="";
+	if(str.length>0&&key.length>0){
+		for(a=0;a<str.length;a++){
+			var code=str.charCodeAt(a);
+			var Y=a%key.length;
+			var keycode=key.charCodeAt(key[Y]);
+			var tempCode=code-keycode;
+			if(tempCode<0){tempCode=code+255;}
+			data+=String.fromCharCode(tempCode);		
+		}		
+	}
+	return data;
+}
+function code(str){
+	var data="";
+	if(str.length>0){
+		for(a=0;a<str.length;a++){
+			var code=str.charCodeAt(a);				
+			data+=code+',';		
+		}		
+	}
+	return data;
+}
+function ecode(str){
+	var data="";
+	var arr=str.split(',');
+	if(str.length>0){
+		for(a=0;a<arr.length;a++){
+			if(arr[a]!=null)
+			//var c=arr[a]-key.charCodeAt(2);
+			//data+=String.fromCharCode(c);			
+			data+=String.fromCharCode(arr[a]);
+		}		
+	}
+	return data;
+}
+</script>
+</html>

@@ -91,10 +91,9 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Data\PGY.db">
+    <Content Include="App_Data\PGY.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\PGYnew.db" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -116,6 +115,7 @@
     <Compile Include="Common\ComEnum.cs" />
     <Compile Include="Common\ComFile.cs" />
     <Compile Include="Common\ComOracleParam.cs" />
+    <Compile Include="Common\ComTool.cs" />
     <Compile Include="Common\ComWebSetting.cs" />
     <Compile Include="Common\Log.cs" />
     <Compile Include="Common\ComPage.cs" />

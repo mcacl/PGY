@@ -14,27 +14,28 @@ namespace PGYShopingSystem
         {
             var type = (ComEnum.ActEnum)Type;
             object obj = null;
+            Data = ComTool.CustomDecryption(Data.ToString(), ComWebSetting.AppSetingConfig["Key"], true, Data.ToString().Length % (ComWebSetting.KEY.Length % 5));
             var SQl = Data.ToString().Replace("~", "\\\"").Replace("^", "\\\'");//~双引号 ^单引号
             switch (type)
             {
                 case ComEnum.ActEnum.Select:
-                    //{"Type":"1","Data":"{'tablename':'manager_user t','field':'t.*','Wheret':'t.name=\\'qq5\\'','Orderby':'id'}"} 多表
-                    //{"Type":"1","Data":"{'tablename':'manager_user t','fields':'name,sex,age,phone,!~666~!','values':'^qq10^,^0^,^10^,^1234567896666^','Wheret':'t.name=\\'qq5\\'','Orderby':'id'}"} 单表
+                    //查尽量带t {"Type":"1","Data":"{'tablename':'xs_zdjbxx t','fields':'zl,ysdm','WhereT':'t.zddm=^610821104200GB00039^','Orderby':'t.bsm'}"}
                     obj = JsonConvert.DeserializeObject<ActSelect>(SQl);
                     break;
                 case ComEnum.ActEnum.Insert:
-                    //{"Type":"2","Data":"{'tablename':'manager_user','field':'name,sex,age,phone','values':'^qq10^,^0^,^10^,\\'1234567896666\\''}"}
+                    //增values不加引号 {"Type":"2","Data":"{'tablename':'xs_zdjbxx','fields':'zl,ysdm','values':'神木县大柳塔镇光明路66666,666666'}"}
                     obj = JsonConvert.DeserializeObject<ActInsert>(SQl);
                     break;
                 case ComEnum.ActEnum.Update:
-                    //{"Type":"3","Data":"{'tablename':'manager_user','fields':'name,sex,age','values':'qq11,11,11','WhereT':'name=^qq10^'}"}
+                    //更新values不加引号 {"Type":"3","Data":"{'tablename':'xs_zdjbxx t','fields':'zl,ysdm','values':'神木县大柳塔镇光明路,6001010001','WhereT':'t.zddm=^610821104200GB00039^'}"}
                     obj = JsonConvert.DeserializeObject<ActUpdate>(SQl);
                     break;
                 case ComEnum.ActEnum.Delete:
-                    ////{"Type":"4","Data":"{'tablename':'manager_user','WhereT':'name=^qq11^'}"}
+                    //删除 {"Type":"4","Data":"{'tablename':'xs_zdjbxx','wheret':'ysdm=^666666^'}"}
                     obj = JsonConvert.DeserializeObject<ActDelete>(SQl);
                     break;
                 case ComEnum.ActEnum.Other:
+                    //多条不用begin不行 {"Type":"5","Data":"begin update xs_zdjbxx set zl=zl||'1' where zddm='610821104200GB00030';update xs_zdjbxx set zl=zl||'2' where zddm='610821104200GB00031'; end;"}
                     obj = Data.ToString();
                     break;
                 case ComEnum.ActEnum.SelectPageProc:
@@ -69,8 +70,10 @@ namespace PGYShopingSystem
             if (!string.IsNullOrEmpty(TableName) && !string.IsNullOrEmpty(Fields))
             {
                 SQL = " select " + Fields + " from " + TableName;
-                if (!string.IsNullOrEmpty(WhereT)) SQL = SQL + " where " + WhereT;
-                if (!string.IsNullOrEmpty(Orderby)) SQL = SQL + " order by " + Orderby;
+                if (!string.IsNullOrEmpty(WhereT))
+                    SQL = SQL + " where " + WhereT;
+                if (!string.IsNullOrEmpty(Orderby))
+                    SQL = SQL + " order by " + Orderby;
             }
 
             return SQL;
@@ -90,7 +93,8 @@ namespace PGYShopingSystem
             {
                 var valuesarr = Values.Split(',');
                 Values = "";
-                foreach (var v in valuesarr) Values += "'" + v + "',";
+                foreach (var v in valuesarr)
+                    Values += "'" + v + "',";
 
                 Values = Values.TrimEnd(',');
                 SQL = " insert into " + TableName + "(" + Fields + ") values(" + Values + ")";
@@ -116,9 +120,11 @@ namespace PGYShopingSystem
                 var fileval = "";
                 var fieldarr = Fields.Split(',');
                 var valuearr = Values.Split(',');
-                for (var i = 0; i < fieldarr.Length; i++) fileval += fieldarr[i] + "='" + valuearr[i] + "',";
+                for (var i = 0; i < fieldarr.Length; i++)
+                    fileval += fieldarr[i] + "='" + valuearr[i] + "',";
                 SQL = SQL + fileval.TrimEnd(',');
-                if (!string.IsNullOrEmpty(WhereT)) SQL = SQL + " where " + WhereT;
+                if (!string.IsNullOrEmpty(WhereT))
+                    SQL = SQL + " where " + WhereT;
             }
 
             return SQL;
@@ -134,8 +140,9 @@ namespace PGYShopingSystem
             var SQL = "";
             if (!string.IsNullOrEmpty(TableName))
             {
-                SQL = " delete " + TableName;
-                if (!string.IsNullOrEmpty(WhereT)) SQL += " where " + WhereT;
+                SQL = " delete from " + TableName;
+                if (!string.IsNullOrEmpty(WhereT))
+                    SQL += " where " + WhereT;
             }
 
             return SQL;
@@ -144,8 +151,21 @@ namespace PGYShopingSystem
 
     public class ActResult
     {
+        /// <summary>
+        /// -1:异常 0:失败 1:成功
+        /// </summary>
         public int Code { get; set; }
+        /// <summary>
+        /// 操作消息
+        /// </summary>
         public string Msg { get; set; }
+        /// <summary>
+        /// data是否加密 默认false
+        /// </summary>
+        public bool IsEncrypt { get; set; }
+        /// <summary>
+        /// 请求的数据
+        /// </summary>
         public string Data { get; set; }
     }
 }

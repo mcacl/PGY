@@ -21,27 +21,27 @@ namespace PGYShopingSystem
         {
             var SQL = "";
             var res = new ActResult();
-            var type = DBTypeEnum.DBType.Sqlite;
             try
             {
                 var myenum = (ComEnum.ActEnum)parmer.Type;
-                //DBAct dbact = new DBAct();
+                var type = (DBTypeEnum.DBType)Enum.Parse(typeof(DBTypeEnum.DBType), ComWebSetting.DBType);
                 switch (myenum)
                 {
                     case ComEnum.ActEnum.Select:
+                        //查尽量带t {"Type":"1","Data":"{'tablename':'xs_zdjbxx t','fields':'t.zl,t.ysdm','WhereT':'t.zddm=^610821104200GB00039^'}"}
                         var select = parmer.GetAct() as ActSelect;
                         var selectsql = select.ToSQL();
                         SQL = selectsql;
                         if (!string.IsNullOrEmpty(SQL))
                         {
-                            //var dt = dbact.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDS1(SQL);
-                            var dt = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDS1(SQL);
+                            var dt = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDT(SQL);
+                            res.Data = JsonConvert.SerializeObject(dt);
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
-                            res.Data = JsonConvert.SerializeObject(dt);
                         }
                         break;
-                    /*case ComEnum.ActEnum.Insert:
+                    case ComEnum.ActEnum.Insert:
+                        //增values不加引号 {"Type":"2","Data":"{'tablename':'xs_zdjbxx','fields':'zl,ysdm','values':'神木县大柳塔镇光明路66666,666666'}"}
                         var insert = parmer.GetAct() as ActInsert;
                         var insertsql = insert.ToSQL();
                         SQL = insertsql;
@@ -53,6 +53,7 @@ namespace PGYShopingSystem
                         }
                         break;
                     case ComEnum.ActEnum.Update:
+                        //更新values不加引号 {"Type":"3","Data":"{'tablename':'xs_zdjbxx t','fields':'zl,ysdm','values':'神木县大柳塔镇光明路,6001010001','WhereT':'t.zddm=^610821104200GB00039^'}"}
                         var update = parmer.GetAct() as ActUpdate;
                         var updatesql = update.ToSQL();
                         SQL = updatesql;
@@ -64,6 +65,7 @@ namespace PGYShopingSystem
                         }
                         break;
                     case ComEnum.ActEnum.Delete:
+                        //删除 {"Type":"4","Data":"{'tablename':'xs_zdjbxx','wheret':'ysdm=^666666^'}"}
                         var delete = parmer.GetAct() as ActDelete;
                         var deletesql = delete.ToSQL();
                         SQL = deletesql;
@@ -75,6 +77,7 @@ namespace PGYShopingSystem
                         }
                         break;
                     case ComEnum.ActEnum.Other:
+                        //多条不用begin不行 {"Type":"5","Data":"begin update xs_zdjbxx set zl=zl||'1' where zddm='610821104200GB00030';update xs_zdjbxx set zl=zl||'2' where zddm='610821104200GB00031'; end;"}
                         SQL = parmer.GetAct().ToString();
                         if (!string.IsNullOrEmpty(SQL))
                         {
@@ -103,7 +106,7 @@ namespace PGYShopingSystem
                             res.Code = (int)ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
-                        break;*/
+                        break;
                 }
                 if (res.Code != (int)ComEnum.EnumActResult.Success)
                 {

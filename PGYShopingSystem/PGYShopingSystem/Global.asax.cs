@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using DBExecute;
 using PGYShopingSystem.Common;
 
 namespace PGYShopingSystem
@@ -12,7 +13,7 @@ namespace PGYShopingSystem
         {
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            ComWebSetting.InitSetting();
+            ComWebSetting.InitSetting(DBTypeEnum.DBType.Oracle);
         }
 
         protected void Session_Start(object sender, EventArgs e)

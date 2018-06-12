@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Runtime.CompilerServices;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
@@ -22,14 +24,9 @@ namespace DBExecute
         {
             DBAct dbact = new DBAct();
             dbact.ConnectionStr = connectstring;
-            //DBABase = new DBActBase(DBTypeEnum.DBType.Oracle, connectstring);
             dbact.DBType = Enum.GetName(dbtype.GetType(), dbtype);
             dbact.DBTypeValue = (int)dbtype;
             dbact.DBABase = new DBActBase(connectstring);
-            //this.ConnectionStr = connectstring;
-            //this.DBType = Enum.GetName(dbtype.GetType(), dbtype);
-            //this.DBTypeValue = (int)dbtype;
-            //this.DBABase = new DBActBase(connectstring);
             return dbact;
         }
         /// <summary>
@@ -63,7 +60,12 @@ namespace DBExecute
 
             throw new Exception("数据库连接字符串未设置！");
         }
-        public DataSet DBSelectDS1(string SQL)
+        /// <summary>
+        /// 查询 返回dataset 注意不同数据库的sql不太一样
+        /// </summary>
+        /// <param name="SQL">查询sql</param>
+        /// <returns>dataset</returns>
+        public DataSet DBSelectDS(string SQL)
         {
             var dataSet = new DataSet();
             if (!string.IsNullOrEmpty(SQL) && DBABase != null)
@@ -79,6 +81,7 @@ namespace DBExecute
                             {
                                 var cmd = tupOracle.Item2;
                                 var adapt = tupOracle.Item3;
+                                adapt.SelectCommand = cmd;
                                 adapt.Fill(dataSet);
                                 connection.Close();
                             }
@@ -101,6 +104,7 @@ namespace DBExecute
                             {
                                 var cmd = tupAccess.Item2;
                                 var adapt = tupAccess.Item3;
+                                adapt.SelectCommand = cmd;
                                 adapt.Fill(dataSet);
                                 connection.Close();
                             }
@@ -123,6 +127,7 @@ namespace DBExecute
                             {
                                 var cmd = tupSqlServer.Item2;
                                 var adapt = tupSqlServer.Item3;
+                                adapt.SelectCommand = cmd;
                                 adapt.Fill(dataSet);
                                 connection.Close();
                             }
@@ -145,6 +150,7 @@ namespace DBExecute
                             {
                                 var cmd = tupSqlite.Item2;
                                 var adapt = tupSqlite.Item3;
+                                adapt.SelectCommand = cmd;
                                 adapt.Fill(dataSet);
                                 connection.Close();
                             }
@@ -165,101 +171,216 @@ namespace DBExecute
             return dataSet;
         }
         /// <summary>
-        ///     查询 返回dataset
-        /// </summary>
-        /// <param name="SQL">查询sql</param>
-        /// <returns>dataset</returns>
-        public DataSet DBSelectDS(string SQL)
-        {
-            var dataSet = new DataSet();
-            using (OrclConnect = ConnenctOpen())
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        var oda = new OracleDataAdapter();
-                        oda.SelectCommand = cmd;
-                        oda.Fill(dataSet);
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
-                }
-            }
-
-            return dataSet;
-        }
-
-        /// <summary>
-        ///     查询 返回datatable
+        /// 查询 返回datatable 注意不同数据库的sql不太一样
         /// </summary>
         /// <param name="SQL">查询sql</param>
         /// <returns>datatable</returns>
         public DataTable DBSelectDT(string SQL)
         {
-            var datatable = new DataTable();
-            using (OrclConnect = ConnenctOpen())
+            var dataTable = new DataTable();
+            if (!string.IsNullOrEmpty(SQL) && DBABase != null)
             {
-                try
+                DBTypeEnum.DBType dbtype = (DBTypeEnum.DBType)DBTypeValue;
+                switch (dbtype)
                 {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        var oda = new OracleDataAdapter();
-                        oda.SelectCommand = cmd;
-                        oda.Fill(datatable);
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
+                    case DBTypeEnum.DBType.Oracle:
+                        var tupOracle = DBABase.GetOracleConnnect(SQL);
+                        using (var connection = tupOracle.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupOracle.Item2;
+                                var adapt = tupOracle.Item3;
+                                adapt.SelectCommand = cmd;
+                                adapt.Fill(dataTable);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Access:
+                        var tupAccess = DBABase.GetAccessConnnect(SQL);
+                        using (var connection = tupAccess.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupAccess.Item2;
+                                var adapt = tupAccess.Item3;
+                                adapt.SelectCommand = cmd;
+                                adapt.Fill(dataTable);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.SqlServer:
+                        var tupSqlServer = DBABase.GetSqlServerConnnect(SQL);
+                        using (var connection = tupSqlServer.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlServer.Item2;
+                                var adapt = tupSqlServer.Item3;
+                                adapt.SelectCommand = cmd;
+                                adapt.Fill(dataTable);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Sqlite:
+                        var tupSqlite = DBABase.GetSqliteConnnect(SQL);
+                        using (var connection = tupSqlite.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlite.Item2;
+                                var adapt = tupSqlite.Item3;
+                                adapt.SelectCommand = cmd;
+                                adapt.Fill(dataTable);
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
                 }
             }
-            return datatable;
+            return dataTable;
         }
 
         /// <summary>
-        ///     更新
+        /// 更新 返回受影响行数 注意不同数据库的sql不太一样
         /// </summary>
         /// <param name="SQL">更新SQL语句</param>
         /// <returns>更新条数</returns>
         public int DBUpdata(string SQL)
         {
             var num = 0;
-            using (OrclConnect = ConnenctOpen())
+            if (!string.IsNullOrEmpty(SQL) && DBABase != null)
             {
-                try
+                DBTypeEnum.DBType dbtype = (DBTypeEnum.DBType)DBTypeValue;
+                switch (dbtype)
                 {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        num = cmd.ExecuteNonQuery();
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
+                    case DBTypeEnum.DBType.Oracle:
+                        var tupOracle = DBABase.GetOracleConnnect(SQL);
+                        using (var connection = tupOracle.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupOracle.Item2;
+                                var adapt = tupOracle.Item3;
+                                num = cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Access:
+                        var tupAccess = DBABase.GetAccessConnnect(SQL);
+                        using (var connection = tupAccess.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupAccess.Item2;
+                                var adapt = tupAccess.Item3;
+                                num = cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.SqlServer:
+                        var tupSqlServer = DBABase.GetSqlServerConnnect(SQL);
+                        using (var connection = tupSqlServer.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlServer.Item2;
+                                var adapt = tupSqlServer.Item3;
+                                num = cmd.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Sqlite:
+                        var tupSqlite = DBABase.GetSqliteConnnect(SQL);
+                        using (var connection = tupSqlite.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlite.Item2;
+                                var adapt = tupSqlite.Item3;
+                                num = cmd.ExecuteNonQuery();//如果有返回条数，但数据库数据为变化，需要将SQLite.Interop.066.DLL复制到输出目录
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -274,27 +395,7 @@ namespace DBExecute
         public int DBInsert(string SQL)
         {
             var num = 0;
-            using (OrclConnect = ConnenctOpen())
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        num = cmd.ExecuteNonQuery();
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
-                }
-            }
+            num = DBUpdata(SQL);
 
             return num;
         }
@@ -307,27 +408,7 @@ namespace DBExecute
         public int DBDelete(string SQL)
         {
             var num = 0;
-            using (OrclConnect = ConnenctOpen())
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        num = cmd.ExecuteNonQuery();
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
-                }
-            }
+            num = DBUpdata(SQL);
 
             return num;
         }
@@ -335,34 +416,186 @@ namespace DBExecute
         /// 执行多条sql语句或特殊语句
         /// </summary>
         /// <param name="SQL">sql脚本</param>
+        /// <param name="IsTransAction">是否开启事务 默认true</param>
         /// <returns>受影响条数</returns>
-        public int DBOther(string SQL)
+        public int DBOther(string SQL, bool IsTransAction = true)
         {
             var num = 0;
-            using (OrclConnect = ConnenctOpen())
+            if (!string.IsNullOrEmpty(SQL) && DBABase != null)
             {
-                try
+                DBTypeEnum.DBType dbtype = (DBTypeEnum.DBType)DBTypeValue;
+                switch (dbtype)
                 {
-                    if (!string.IsNullOrEmpty(SQL))
-                    {
-                        var cmd = new OracleCommand(SQL, OrclConnect);
-                        num = cmd.ExecuteNonQuery();
-                        OrclConnect.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (OrclConnect.State != ConnectionState.Closed)
-                        OrclConnect.Close();
+                    case DBTypeEnum.DBType.Oracle:
+                        var tupOracle = DBABase.GetOracleConnnect(SQL);
+                        using (var connection = tupOracle.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupOracle.Item2;
+                                var adapt = tupOracle.Item3;
+                                if (IsTransAction)
+                                {
+                                    using (OracleTransaction orclTrans = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                                    {
+                                        try
+                                        {
+                                            num = cmd.ExecuteNonQuery();
+                                            orclTrans.Commit();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            orclTrans.Rollback();
+                                            throw ex;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    num = cmd.ExecuteNonQuery();
+                                }
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Access:
+                        var tupAccess = DBABase.GetAccessConnnect(SQL);
+                        using (var connection = tupAccess.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupAccess.Item2;
+                                var adapt = tupAccess.Item3;
+                                if (IsTransAction)
+                                {
+                                    using (OleDbTransaction orclTrans = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                                    {
+                                        try
+                                        {
+                                            num = cmd.ExecuteNonQuery();
+                                            orclTrans.Commit();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            orclTrans.Rollback();
+                                            throw ex;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    num = cmd.ExecuteNonQuery();
+                                }
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.SqlServer:
+                        var tupSqlServer = DBABase.GetSqlServerConnnect(SQL);
+                        using (var connection = tupSqlServer.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlServer.Item2;
+                                var adapt = tupSqlServer.Item3;
+                                if (IsTransAction)
+                                {
+                                    using (SqlTransaction orclTrans = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                                    {
+                                        try
+                                        {
+                                            num = cmd.ExecuteNonQuery();
+                                            orclTrans.Commit();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            orclTrans.Rollback();
+                                            throw ex;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    num = cmd.ExecuteNonQuery();
+                                }
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
+                    case DBTypeEnum.DBType.Sqlite:
+                        var tupSqlite = DBABase.GetSqliteConnnect(SQL);
+                        using (var connection = tupSqlite.Item1)
+                        {
+                            try
+                            {
+                                var cmd = tupSqlite.Item2;
+                                var adapt = tupSqlite.Item3;
+                                if (IsTransAction)
+                                {
+                                    using (SQLiteTransaction orclTrans = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                                    {
+                                        try
+                                        {
+                                            num = cmd.ExecuteNonQuery();
+                                            orclTrans.Commit();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            orclTrans.Rollback();
+                                            throw ex;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    num = cmd.ExecuteNonQuery();
+                                }
+                                connection.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                            finally
+                            {
+                                if (connection.State != ConnectionState.Closed)
+                                    connection.Close();
+                            }
+                        }
+                        break;
                 }
             }
 
             return num;
         }
+
         /// <summary>
         ///     执行分页的存储过程 IN1:datasql 2:pagesize页大小 3:curpage当前页 OUT:1.curpage当前页 2.pagenum页数 3.总条数 4.pagesize 5.分页数据表
         /// </summary>

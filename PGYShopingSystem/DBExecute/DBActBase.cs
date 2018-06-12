@@ -83,6 +83,7 @@ namespace DBExecute
             }
             return tuple;
         }
+        
         public T GetConnection<T>(string SQL) where T : DbConnection
         {
             object obj = null;

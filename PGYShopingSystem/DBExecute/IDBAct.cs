@@ -43,7 +43,8 @@ namespace DBExecute
         /// 执行多条sql语句或特殊语句
         /// </summary>
         /// <param name="SQL">sql脚本</param>
+        /// <param name="IsTransAction">是否开启事务 默认true</param>
         /// <returns>受影响条数</returns>
-        int DBOther(string SQL);
+        int DBOther(string SQL, bool IsTransAction = true);
     }
 }
