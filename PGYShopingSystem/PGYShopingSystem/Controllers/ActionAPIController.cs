@@ -11,9 +11,14 @@ namespace PGYShopingSystem
     public class ActionAPIController : ApiController
     {
         // GET api/<controller>/5
-        public string Get(int id)
+        public string Get()
         {
-            return "value";
+            var res = new ActResult();
+            res.Code = ComEnum.EnumActResult.Success;
+            res.IsEncrypt = false;
+            res.Msg = "调用测试接口成功!";
+
+            return JsonConvert.SerializeObject(res);
         }
 
         // POST api/<controller>
@@ -36,7 +41,7 @@ namespace PGYShopingSystem
                         {
                             var dt = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBSelectDT(SQL);
                             res.Data = JsonConvert.SerializeObject(dt);
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -48,7 +53,7 @@ namespace PGYShopingSystem
                         if (!string.IsNullOrEmpty(SQL))
                         {
                             res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBInsert(SQL).ToString();
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -60,7 +65,7 @@ namespace PGYShopingSystem
                         if (!string.IsNullOrEmpty(SQL))
                         {
                             res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBUpdata(SQL).ToString();
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -72,7 +77,7 @@ namespace PGYShopingSystem
                         if (!string.IsNullOrEmpty(SQL))
                         {
                             res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBDelete(SQL).ToString();
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -82,7 +87,7 @@ namespace PGYShopingSystem
                         if (!string.IsNullOrEmpty(SQL))
                         {
                             res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBOther(SQL).ToString();
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -94,7 +99,7 @@ namespace PGYShopingSystem
                             var outtup = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).DBProcPage(intup);
                             ComPage page = new ComPage(outtup);
                             res.Data = JsonConvert.SerializeObject(page);
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
@@ -103,34 +108,24 @@ namespace PGYShopingSystem
                         if (procparam != null)
                         {
                             res.Data = DBExecute.DBAct.InitDBAct(type, ComWebSetting.ConnectString).Proc(procparam.ProcName, procparam.GetOracleParam(), procparam.IsRetTable).ToString();
-                            res.Code = (int)ComEnum.EnumActResult.Success;
+                            res.Code = ComEnum.EnumActResult.Success;
                             res.Msg = "操作成功!";
                         }
                         break;
                 }
-                if (res.Code != (int)ComEnum.EnumActResult.Success)
+                if (res.Code != ComEnum.EnumActResult.Success)
                 {
-                    res.Code = (int)ComEnum.EnumActResult.Error;
+                    res.Code = ComEnum.EnumActResult.Error;
                     res.Msg = "操作失败!参数转换不合规范";
                 }
             }
             catch (Exception ex)
             {
-                res.Code = (int)ComEnum.EnumActResult.Exception;
+                res.Code = ComEnum.EnumActResult.Exception;
                 res.Msg = "接口异常!请确认参数是否正确!";
                 Log.LogInBatchExceptWrite(ex, parmer.Data.ToString(), SQL);
             }
             return JsonConvert.SerializeObject(res);
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
     }
 }

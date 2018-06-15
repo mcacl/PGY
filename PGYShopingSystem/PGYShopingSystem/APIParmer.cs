@@ -154,7 +154,7 @@ namespace PGYShopingSystem
         /// <summary>
         /// -1:异常 0:失败 1:成功
         /// </summary>
-        public int Code { get; set; }
+        public ComEnum.EnumActResult Code { get; set; }
         /// <summary>
         /// 操作消息
         /// </summary>
