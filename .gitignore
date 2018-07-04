@@ -4,3 +4,4 @@ bin/
 obj/
 *.dgml
 *.user
+node_modules/
