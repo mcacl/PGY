@@ -9,26 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PGYShopingSystem.Tests", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBExecute", "DBExecute\DBExecute.csproj", "{3C5922B6-B726-4501-A93F-5581EFB47E76}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "PGYWeb", "http://localhost:61910", "{39A12452-B8CF-4E5C-90E8-226354BC2046}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_61910"
-		Debug.AspNetCompiler.PhysicalPath = "PGYWeb\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61910\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_61910"
-		Release.AspNetCompiler.PhysicalPath = "PGYWeb\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61910\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "PGYWeb\"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PGYWeb", "PGYWeb\PGYWeb.csproj", "{FDC8EAEA-E312-43F6-9090-84DC5FE6FF7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +29,10 @@ Global
 		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5922B6-B726-4501-A93F-5581EFB47E76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39A12452-B8CF-4E5C-90E8-226354BC2046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39A12452-B8CF-4E5C-90E8-226354BC2046}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39A12452-B8CF-4E5C-90E8-226354BC2046}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{39A12452-B8CF-4E5C-90E8-226354BC2046}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{FDC8EAEA-E312-43F6-9090-84DC5FE6FF7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC8EAEA-E312-43F6-9090-84DC5FE6FF7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC8EAEA-E312-43F6-9090-84DC5FE6FF7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC8EAEA-E312-43F6-9090-84DC5FE6FF7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
