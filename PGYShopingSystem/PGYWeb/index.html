@@ -1,109 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>蒲公英首页</title>
-    <link rel="icon" href="SysImage/PGYLogo.png" type="image/png">
-    <link rel="stylesheet" href="UISource/Bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="UISource/Bootstrap/css/ie10-viewport.css">
-    <!--debug vue-->
-    <script src="UISource/Vue2.5.16/vue-debug.js"></script>
-    <!--relase vue-->
-    <!--<script src="UISource/Vue2.5.16/vue-release.js.js"></script>-->
-    <script src="Common/CommMix.js"></script>
-</head>
-<body>
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div id="navregion" class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">{{title}}</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li v-for="(item,index) in navs" @mouseover="addActive" @mouseout="removeActive">
-                    <a :href="item.link">{{item.name}}</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">更多<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">Nav header</li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div id="mainregion" class="container">
-    <div>
-        <div></div>
-        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carousel-example-generic" :data-slide-to="index" v-for="(item,index) in imgs"
-                    :class="index==0?'active':''"></li>
-                <!--<li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>-->
-                <!--<li data-target="#carousel-example-generic" data-slide-to="2" class="active"></li>-->
-            </ol>
-            <div class="carousel-inner" role="listbox">
-                <div class="item" v-for="(item,index) in imgs" :class="index==0?'active':''">
-                    <img data-src="holder.js/1140x500/auto/#777:#555/text:First slide" alt="First slide [1140x500]"
-                         :src="spimgpath+item.path" :href="item.link" data-holder-rendered="true">
-                </div>
-                <!--<div class="item">
-                    <img data-src="holder.js/1140x500/auto/#666:#444/text:Second slide" alt="Second slide [1140x500]"
-                         src="SpImage/GuunDoong/gd1.png" data-holder-rendered="true">
-                </div>
-                <div class="item active">
-                    <img data-src="holder.js/1140x500/auto/#555:#333/text:Third slide" alt="Third slide [1140x500]"
-                         src="SpImage/GuunDoong/gd1.png" data-holder-rendered="true">
-                </div>-->
-            </div>
-            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">上</span>
-            </a>
-            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">下</span>
-            </a>
-        </div>
-    </div>
-
-    <ul>
-        <li v-for="item in 40">{{item}}</li>
-    </ul>
-
-</div>
-<div style="text-align: center;background-color: lightgreen"><a href="#mainregion" class="back-to-top">返回顶部</a></div>
-<footer class="bs-docs-footer" style="margin-top: 10px">
-    <div id="footregion" class="container" style="text-align: center">
-        <p>Designed and built with all the love in the world by <a href="https://twitter.com/mdo"
-                                                                   target="_blank">@mdo</a> and <a
-                href="https://twitter.com/fat" target="_blank">@fat</a>. Maintained by the <a
-                href="https://github.com/orgs/twbs/people">core team</a> with the help of <a
-                href="https://github.com/twbs/bootstrap/graphs/contributors">our contributors</a>.</p>
-        <p>本项目源码受 <a rel="license" href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT</a>开源协议保护，文档受
-            <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a> 开源协议保护。
-        </p>
-    </div>
-</footer>
-</body>
-<script src="UISource/Jquery3.3.1.js"></script>
-<script src="UISource/Bootstrap/js/bootstrap.min.js"></script>
-<script src="UISource/Bootstrap/js/ie10-viewport.js"></script>
-<script src="ControlJS/Index/index.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vue1</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
